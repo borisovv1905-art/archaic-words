@@ -1,0 +1,30 @@
+{
+  "data": {
+    "train": 2694,
+    "test": 670,
+    "token_overlap_train_test": 0
+  },
+  "models": {
+    "mean": {
+      "spearman": 0.0,
+      "rmse": 0.1339,
+      "mae": 0.1091,
+      "n": 670
+    },
+    "only_-log_freq (ранжирование без обучения)": {
+      "spearman": 0.5468
+    },
+    "freq_len": {
+      "spearman": 0.5536,
+      "rmse": 0.1117,
+      "mae": 0.0888,
+      "n": 670
+    },
+    "freq_len_charngram": {
+      "spearman": 0.5669,
+      "rmse": 0.112,
+      "mae": 0.0891,
+      "n": 670
+    }
+  }
+}

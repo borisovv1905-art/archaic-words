@@ -1,0 +1,8 @@
+data/raw/
+data/corpus/
+data/annotation/*.csv
+!data/annotation/.gitkeep
+__pycache__/
+*.egg-info/
+.venv/
+.pytest_cache/
