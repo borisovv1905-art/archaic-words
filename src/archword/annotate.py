@@ -3,6 +3,10 @@
     python -m archword.annotate --corpus data/corpus/belkin.json --raw data/raw \
         --n 200 --out data/annotation/belkin_sheet.csv
 
+Второй раунд: добрать редкие слова, не повторяя уже размеченные:
+    python -m archword.annotate --max-ipm 2 --n 300 --seed 1 \
+        --exclude data/annotation/round1_labeled.csv --out data/annotation/round2_sheet.csv
+
 Шкала оценки (та же, что у публичных датасетов, 1..5):
     1 — слово знакомо, объяснять нечего
     2 — понятно по контексту
@@ -50,17 +54,37 @@ def collect(tales: dict[str, str]) -> pd.DataFrame:
 
 
 def sample_sheet(
-    tales: dict[str, str], freq: dict[str, float], n: int = 200, seed: int = 0, include_names: bool = False
+    tales: dict[str, str],
+    freq: dict[str, float],
+    n: int = 200,
+    seed: int = 0,
+    include_names: bool = False,
+    max_ipm: float | None = None,
+    exclude: set[str] | frozenset[str] = frozenset(),
 ) -> pd.DataFrame:
+    """Выбирает слова для разметки.
+
+    По умолчанию слова берутся случайно внутри пяти групп по частоте.
+    Если задан max_ipm, берутся только слова не чаще этого порога (на миллион слов),
+    без деления на группы: так добирают редкие слова, где почти все «трудные».
+    Слова из exclude (уже размеченные) пропускаются.
+    """
     df = collect(tales)
     if df.empty:
         return pd.DataFrame(columns=COLUMNS)
     if not include_names:
         df = df[~df["maybe_name"]]
+    banned = {normalize(w) for w in exclude}
+    df = df[~df["word"].isin(banned)]
     df = df.assign(lf=log_freq(df["word"], freq))
     df["ipm"] = df["word"].map(lambda w: freq.get(w, 0.0))
-    # пять групп равного размера по частоте (дубликаты границ допустимы)
-    df["bin"] = pd.qcut(df["lf"].rank(method="first"), q=min(5, len(df)), labels=False)
+    if max_ipm is not None:
+        df = df[df["ipm"] <= max_ipm]
+    if df.empty:
+        return pd.DataFrame(columns=COLUMNS)
+    # группы равного размера по частоте (дубликаты границ допустимы); с max_ipm одна группа
+    q = 1 if max_ipm is not None else min(5, len(df))
+    df["bin"] = 0 if q == 1 else pd.qcut(df["lf"].rank(method="first"), q=q, labels=False)
     rng = random.Random(seed)
     per_bin = max(1, n // df["bin"].nunique())
     picked = []
@@ -83,10 +107,18 @@ def main(argv=None) -> None:
     ap.add_argument("--raw", default="data/raw")
     ap.add_argument("--n", type=int, default=200)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--max-ipm", type=float, default=None,
+                    help="брать только слова не чаще этого порога (на миллион слов), например 2")
+    ap.add_argument("--exclude", action="append", default=[],
+                    help="CSV с уже размеченными словами (колонка word); можно повторять")
     ap.add_argument("--out", default="data/annotation/belkin_sheet.csv")
     args = ap.parse_args(argv)
     tales = json.loads(Path(args.corpus).read_text(encoding="utf-8"))
-    sheet = sample_sheet(tales, load_freq(args.raw), n=args.n, seed=args.seed)
+    banned = set()
+    for path in args.exclude:
+        banned |= set(pd.read_csv(path, encoding="utf-8-sig")["word"].astype(str))
+    sheet = sample_sheet(tales, load_freq(args.raw), n=args.n, seed=args.seed,
+                         max_ipm=args.max_ipm, exclude=banned)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     sheet.to_csv(out, index=False, encoding="utf-8-sig")
