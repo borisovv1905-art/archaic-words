@@ -7,6 +7,13 @@
     python -m archword.annotate --max-ipm 2 --n 300 --seed 1 \
         --exclude data/annotation/round1_labeled.csv --out data/annotation/round2_sheet.csv
 
+Третий раунд: новые редкие слова плюс слова для повторной оценки (вслепую, вперемешку),
+чтобы измерить, насколько разметчик согласен сам с собой:
+    python -m archword.annotate --max-ipm 2 --n 200 --seed 3 \
+        --exclude data/annotation/round1_labeled.csv --exclude data/annotation/round2_labeled.csv \
+        --retest-from data/annotation/round1_labeled.csv --retest-from data/annotation/round2_labeled.csv \
+        --retest-n 40 --blind --out data/annotation/round3_sheet.csv
+
 Шкала оценки (та же, что у публичных датасетов, 1..5):
     1 — слово знакомо, объяснять нечего
     2 — понятно по контексту
@@ -23,6 +30,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -32,6 +40,7 @@ from .text import iter_occurrences, normalize
 
 COLUMNS = ["id", "word", "tale", "context", "ipm", "maybe_name", "label", "note"]
 MIN_LEN = 3
+SKIP_NOTES = {"имя", "ошибка", "опечатка"}  # такие строки не берём для повторной оценки
 
 
 def collect(tales: dict[str, str]) -> pd.DataFrame:
@@ -74,6 +83,8 @@ def sample_sheet(
         return pd.DataFrame(columns=COLUMNS)
     if not include_names:
         df = df[~df["maybe_name"]]
+    # обрывки вида «***ское» (в корпусе так закрыты названия) словами не считаем
+    df = df[[re.search(r"\*+" + re.escape(f), c) is None for f, c in zip(df["form"], df["context"])]]
     banned = {normalize(w) for w in exclude}
     df = df[~df["word"].isin(banned)]
     df = df.assign(lf=log_freq(df["word"], freq))
@@ -101,6 +112,37 @@ def sample_sheet(
     return out[COLUMNS]
 
 
+def add_retest(sheet: pd.DataFrame, labeled: pd.DataFrame, freq: dict[str, float], n: int = 40, seed: int = 0) -> pd.DataFrame:
+    """Добавляет в таблицу n уже размеченных слов для повторной оценки и перемешивает всё.
+
+    Старые оценки в таблицу не попадают, повторные слова ничем не помечены. Половина слов берётся из тех,
+    что получили оценку 2 и выше (иначе почти все повторные слова будут единицами и согласие нечем мерить),
+    половина из слов с оценкой 1. Выборка поэтому не случайная по всему тексту: согласие на ней показывает
+    надёжность оценок, но не доли трудных слов.
+    """
+    lab = labeled.dropna(subset=["label"]).copy()
+    if "note" in lab:
+        lab = lab[~lab["note"].astype(str).str.strip().str.lower().isin(SKIP_NOTES)]
+    lab = lab[~lab["word"].map(normalize).isin(set(sheet["word"].map(normalize)))]
+    lab = lab.drop_duplicates("word")
+    rng = random.Random(seed)
+    hard = list(lab.index[lab["label"] >= 2])
+    easy = list(lab.index[lab["label"] == 1])
+    rng.shuffle(hard)
+    rng.shuffle(easy)
+    take_hard = min(len(hard), n // 2)
+    take_easy = min(len(easy), n - take_hard)
+    take_hard = min(len(hard), n - take_easy)  # если лёгких не хватило, добираем трудными
+    rows = lab.loc[hard[:take_hard] + easy[:take_easy]].copy()
+    rows["ipm"] = rows["word"].map(lambda w: freq.get(normalize(w), 0.0))
+    rows["label"] = ""
+    rows["note"] = ""
+    rows["maybe_name"] = 0
+    both = pd.concat([sheet, rows[COLUMNS]], ignore_index=True).sample(frac=1.0, random_state=seed).reset_index(drop=True)
+    both["id"] = range(1, len(both) + 1)
+    return both[COLUMNS]
+
+
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--corpus", default="data/corpus/belkin.json")
@@ -111,14 +153,26 @@ def main(argv=None) -> None:
                     help="брать только слова не чаще этого порога (на миллион слов), например 2")
     ap.add_argument("--exclude", action="append", default=[],
                     help="CSV с уже размеченными словами (колонка word); можно повторять")
+    ap.add_argument("--retest-from", action="append", default=[],
+                    help="CSV с размеченными словами, из которых берутся слова для повторной оценки; можно повторять")
+    ap.add_argument("--retest-n", type=int, default=0, help="сколько слов добавить для повторной оценки")
+    ap.add_argument("--blind", action="store_true",
+                    help="убрать из таблицы подсказки (частоту и пометку «возможно имя»), чтобы они не влияли на оценки")
     ap.add_argument("--out", default="data/annotation/belkin_sheet.csv")
     args = ap.parse_args(argv)
     tales = json.loads(Path(args.corpus).read_text(encoding="utf-8"))
     banned = set()
     for path in args.exclude:
         banned |= set(pd.read_csv(path, encoding="utf-8-sig")["word"].astype(str))
-    sheet = sample_sheet(tales, load_freq(args.raw), n=args.n, seed=args.seed,
-                         max_ipm=args.max_ipm, exclude=banned)
+    freq = load_freq(args.raw)
+    sheet = sample_sheet(tales, freq, n=args.n, seed=args.seed, max_ipm=args.max_ipm, exclude=banned)
+    if args.retest_n:
+        if not args.retest_from:
+            raise SystemExit("Для --retest-n укажите --retest-from (CSV с размеченными словами).")
+        labeled = pd.concat([pd.read_csv(p, encoding="utf-8-sig") for p in args.retest_from], ignore_index=True)
+        sheet = add_retest(sheet, labeled, freq, n=args.retest_n, seed=args.seed)
+    if args.blind:
+        sheet = sheet.drop(columns=["ipm", "maybe_name"])
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     sheet.to_csv(out, index=False, encoding="utf-8-sig")
