@@ -71,3 +71,23 @@ def test_load_labeled_skips_error_notes(tmp_path):
     pd.DataFrame({"id": [1, 2, 3], "word": ["а", "б", "в"], "label": [1, 3, 2],
                   "note": ["", "ошибка", "Имя"]}).to_csv(p, index=False)
     assert transfer.load_labeled(p)["word"].tolist() == ["а"]
+
+
+def test_evaluate_many_gives_each_sheet_and_combined(tmp_path):
+    raw, words, freq = make_raw(tmp_path / "raw")
+    p1, _ = _labeled(tmp_path, words[:30], freq)
+    p1 = p1.rename(tmp_path / "round1_labeled.csv")
+    sub = tmp_path / "r2"
+    sub.mkdir()
+    p2, _ = _labeled(sub, words[30:60], freq)
+    p2 = p2.rename(sub / "round2_labeled.csv")
+    rep = transfer.evaluate_many(raw, [p1, p2], n_boot=100)
+    assert set(rep) == {"round1_labeled", "round2_labeled", "combined"}
+    assert rep["combined"]["n_words"] == rep["round1_labeled"]["n_words"] + rep["round2_labeled"]["n_words"]
+    assert rep["round2_labeled"]["models"]["only_-log_freq"]["spearman"] > 0.9
+
+
+def test_evaluate_many_single_sheet_has_no_combined(tmp_path):
+    raw, words, freq = make_raw(tmp_path / "raw")
+    p, _ = _labeled(tmp_path, words[:30], freq)
+    assert set(transfer.evaluate_many(raw, [p], n_boot=50)) == {"labeled"}

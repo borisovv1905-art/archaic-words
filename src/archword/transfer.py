@@ -2,6 +2,8 @@
 
     python -m archword.transfer --raw data/raw --labeled data/annotation/round1_labeled.csv \
         --out results/transfer_round1.json
+    python -m archword.transfer --raw data/raw --labeled data/annotation/round1_labeled.csv \
+        --labeled data/annotation/round2_labeled.csv --out results/transfer_rounds.json
 
 Модели обучаются на публичной выборке (Библия, оценка 0..1), а проверяются на словах
 «Повестей Белкина» с оценкой читателя 1..5. Шкалы разные, поэтому сравниваются
@@ -87,9 +89,26 @@ def score(y: np.ndarray, p: np.ndarray, n_boot: int = 2000, seed: int = 0) -> di
 
 
 def evaluate(raw: str | Path, labeled: str | Path, n_boot: int = 2000, seed: int = 0) -> dict:
-    freq = load_freq(raw)
-    sheet = load_labeled(labeled)
-    train = load_complexity(raw, "train")
+    """Оценка бейзлайнов на одной размеченной таблице."""
+    return _evaluate_sheet(load_freq(raw), load_complexity(raw, "train"), load_labeled(labeled), n_boot, seed)
+
+
+def evaluate_many(raw: str | Path, labeled: list[str | Path], n_boot: int = 2000, seed: int = 0) -> dict:
+    """Оценка по каждой таблице отдельно и по их объединению.
+
+    Таблицы собраны по-разному (раунд 1: случайная выборка по группам частоты, раунд 2: только редкие слова),
+    поэтому главный результат даёт каждая таблица отдельно, а объединение нужно для сравнения с общим числом слов.
+    """
+    freq, train = load_freq(raw), load_complexity(raw, "train")
+    sheets = {Path(p).stem: load_labeled(p) for p in labeled}
+    report = {name: _evaluate_sheet(freq, train, df, n_boot, seed) for name, df in sheets.items()}
+    if len(sheets) > 1:
+        both = pd.concat(sheets.values(), ignore_index=True)
+        report["combined"] = _evaluate_sheet(freq, train, both, n_boot, seed)
+    return report
+
+
+def _evaluate_sheet(freq, train, sheet: pd.DataFrame, n_boot: int, seed: int) -> dict:
     y = sheet["label"].to_numpy()
     report = {
         "n_words": int(len(sheet)),
@@ -109,11 +128,14 @@ def evaluate(raw: str | Path, labeled: str | Path, n_boot: int = 2000, seed: int
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--raw", default="data/raw")
-    ap.add_argument("--labeled", default="data/annotation/round1_labeled.csv")
+    ap.add_argument("--labeled", action="append", default=None,
+                    help="размеченная таблица (CSV или XLSX); можно повторять, тогда будет и результат по объединению")
     ap.add_argument("--out", default="results/transfer_round1.json")
     ap.add_argument("--boot", type=int, default=2000)
     args = ap.parse_args(argv)
-    report = evaluate(args.raw, args.labeled, n_boot=args.boot)
+    labeled = args.labeled or ["data/annotation/round1_labeled.csv"]
+    report = evaluate(args.raw, labeled[0], n_boot=args.boot) if len(labeled) == 1 \
+        else evaluate_many(args.raw, labeled, n_boot=args.boot)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")

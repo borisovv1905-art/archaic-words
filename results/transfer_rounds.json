@@ -1,0 +1,209 @@
+{
+  "round1_labeled": {
+    "n_words": 200,
+    "label_counts": {
+      "1": 182,
+      "2": 8,
+      "3": 6,
+      "4": 1,
+      "5": 3
+    },
+    "models": {
+      "only_-log_freq": {
+        "spearman": 0.338,
+        "spearman_ci95": [
+          0.23,
+          0.431
+        ],
+        "auc_label_ge2": 0.839,
+        "auc_label_ge2_ci95": [
+          0.757,
+          0.91
+        ],
+        "positives_ge2": 18,
+        "auc_label_ge3": 0.852,
+        "auc_label_ge3_ci95": [
+          0.781,
+          0.913
+        ],
+        "positives_ge3": 10
+      },
+      "freq_len": {
+        "spearman": 0.324,
+        "spearman_ci95": [
+          0.218,
+          0.416
+        ],
+        "auc_label_ge2": 0.825,
+        "auc_label_ge2_ci95": [
+          0.743,
+          0.895
+        ],
+        "positives_ge2": 18,
+        "auc_label_ge3": 0.831,
+        "auc_label_ge3_ci95": [
+          0.749,
+          0.903
+        ],
+        "positives_ge3": 10
+      },
+      "freq_len_charngram": {
+        "spearman": 0.271,
+        "spearman_ci95": [
+          0.145,
+          0.382
+        ],
+        "auc_label_ge2": 0.773,
+        "auc_label_ge2_ci95": [
+          0.658,
+          0.877
+        ],
+        "positives_ge2": 18,
+        "auc_label_ge3": 0.735,
+        "auc_label_ge3_ci95": [
+          0.576,
+          0.871
+        ],
+        "positives_ge3": 10
+      }
+    }
+  },
+  "round2_labeled": {
+    "n_words": 298,
+    "label_counts": {
+      "1": 229,
+      "2": 23,
+      "3": 21,
+      "4": 9,
+      "5": 16
+    },
+    "models": {
+      "only_-log_freq": {
+        "spearman": 0.308,
+        "spearman_ci95": [
+          0.202,
+          0.409
+        ],
+        "auc_label_ge2": 0.71,
+        "auc_label_ge2_ci95": [
+          0.642,
+          0.778
+        ],
+        "positives_ge2": 69,
+        "auc_label_ge3": 0.706,
+        "auc_label_ge3_ci95": [
+          0.623,
+          0.78
+        ],
+        "positives_ge3": 46
+      },
+      "freq_len": {
+        "spearman": 0.268,
+        "spearman_ci95": [
+          0.155,
+          0.372
+        ],
+        "auc_label_ge2": 0.681,
+        "auc_label_ge2_ci95": [
+          0.605,
+          0.756
+        ],
+        "positives_ge2": 69,
+        "auc_label_ge3": 0.686,
+        "auc_label_ge3_ci95": [
+          0.598,
+          0.765
+        ],
+        "positives_ge3": 46
+      },
+      "freq_len_charngram": {
+        "spearman": 0.3,
+        "spearman_ci95": [
+          0.195,
+          0.404
+        ],
+        "auc_label_ge2": 0.707,
+        "auc_label_ge2_ci95": [
+          0.637,
+          0.777
+        ],
+        "positives_ge2": 69,
+        "auc_label_ge3": 0.684,
+        "auc_label_ge3_ci95": [
+          0.596,
+          0.769
+        ],
+        "positives_ge3": 46
+      }
+    }
+  },
+  "combined": {
+    "n_words": 498,
+    "label_counts": {
+      "1": 411,
+      "2": 31,
+      "3": 27,
+      "4": 10,
+      "5": 19
+    },
+    "models": {
+      "only_-log_freq": {
+        "spearman": 0.365,
+        "spearman_ci95": [
+          0.298,
+          0.426
+        ],
+        "auc_label_ge2": 0.775,
+        "auc_label_ge2_ci95": [
+          0.728,
+          0.819
+        ],
+        "positives_ge2": 87,
+        "auc_label_ge3": 0.774,
+        "auc_label_ge3_ci95": [
+          0.72,
+          0.824
+        ],
+        "positives_ge3": 56
+      },
+      "freq_len": {
+        "spearman": 0.333,
+        "spearman_ci95": [
+          0.26,
+          0.396
+        ],
+        "auc_label_ge2": 0.751,
+        "auc_label_ge2_ci95": [
+          0.699,
+          0.797
+        ],
+        "positives_ge2": 87,
+        "auc_label_ge3": 0.752,
+        "auc_label_ge3_ci95": [
+          0.694,
+          0.807
+        ],
+        "positives_ge3": 56
+      },
+      "freq_len_charngram": {
+        "spearman": 0.329,
+        "spearman_ci95": [
+          0.251,
+          0.399
+        ],
+        "auc_label_ge2": 0.75,
+        "auc_label_ge2_ci95": [
+          0.693,
+          0.8
+        ],
+        "positives_ge2": 87,
+        "auc_label_ge3": 0.725,
+        "auc_label_ge3_ci95": [
+          0.656,
+          0.789
+        ],
+        "positives_ge3": 56
+      }
+    }
+  }
+}
