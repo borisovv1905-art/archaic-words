@@ -1,0 +1,47 @@
+{
+  "round3_new": {
+    "n": 196,
+    "auc_ge2_form": 0.615,
+    "auc_ge2_lemma": 0.638,
+    "delta_auc_ge2": 0.022,
+    "delta_auc_ci95": [
+      -0.049,
+      0.088
+    ],
+    "delta_spearman": 0.032,
+    "delta_spearman_ci95": [
+      -0.064,
+      0.122
+    ]
+  },
+  "round2": {
+    "n": 298,
+    "auc_ge2_form": 0.71,
+    "auc_ge2_lemma": 0.739,
+    "delta_auc_ge2": 0.03,
+    "delta_auc_ci95": [
+      -0.018,
+      0.079
+    ],
+    "delta_spearman": 0.045,
+    "delta_spearman_ci95": [
+      -0.023,
+      0.113
+    ]
+  },
+  "round2+3_rare": {
+    "n": 494,
+    "auc_ge2_form": 0.674,
+    "auc_ge2_lemma": 0.7,
+    "delta_auc_ge2": 0.026,
+    "delta_auc_ci95": [
+      -0.012,
+      0.064
+    ],
+    "delta_spearman": 0.038,
+    "delta_spearman_ci95": [
+      -0.014,
+      0.093
+    ]
+  }
+}

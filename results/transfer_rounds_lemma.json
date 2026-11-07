@@ -1,0 +1,354 @@
+{
+  "round1_labeled": {
+    "n_words": 200,
+    "label_counts": {
+      "1": 182,
+      "2": 8,
+      "3": 6,
+      "4": 1,
+      "5": 3
+    },
+    "models": {
+      "only_-log_freq": {
+        "spearman": 0.338,
+        "spearman_ci95": [
+          0.23,
+          0.431
+        ],
+        "auc_label_ge2": 0.839,
+        "auc_label_ge2_ci95": [
+          0.757,
+          0.91
+        ],
+        "positives_ge2": 18,
+        "auc_label_ge3": 0.852,
+        "auc_label_ge3_ci95": [
+          0.781,
+          0.913
+        ],
+        "positives_ge3": 10
+      },
+      "only_-log_lemma_freq": {
+        "spearman": 0.328,
+        "spearman_ci95": [
+          0.216,
+          0.422
+        ],
+        "auc_label_ge2": 0.828,
+        "auc_label_ge2_ci95": [
+          0.745,
+          0.905
+        ],
+        "positives_ge2": 18,
+        "auc_label_ge3": 0.86,
+        "auc_label_ge3_ci95": [
+          0.78,
+          0.929
+        ],
+        "positives_ge3": 10
+      },
+      "freq_len": {
+        "spearman": 0.324,
+        "spearman_ci95": [
+          0.218,
+          0.416
+        ],
+        "auc_label_ge2": 0.825,
+        "auc_label_ge2_ci95": [
+          0.743,
+          0.895
+        ],
+        "positives_ge2": 18,
+        "auc_label_ge3": 0.831,
+        "auc_label_ge3_ci95": [
+          0.749,
+          0.903
+        ],
+        "positives_ge3": 10
+      },
+      "freq_len_charngram": {
+        "spearman": 0.271,
+        "spearman_ci95": [
+          0.145,
+          0.382
+        ],
+        "auc_label_ge2": 0.773,
+        "auc_label_ge2_ci95": [
+          0.658,
+          0.877
+        ],
+        "positives_ge2": 18,
+        "auc_label_ge3": 0.735,
+        "auc_label_ge3_ci95": [
+          0.576,
+          0.871
+        ],
+        "positives_ge3": 10
+      }
+    }
+  },
+  "round2_labeled": {
+    "n_words": 298,
+    "label_counts": {
+      "1": 229,
+      "2": 23,
+      "3": 21,
+      "4": 9,
+      "5": 16
+    },
+    "models": {
+      "only_-log_freq": {
+        "spearman": 0.308,
+        "spearman_ci95": [
+          0.202,
+          0.409
+        ],
+        "auc_label_ge2": 0.71,
+        "auc_label_ge2_ci95": [
+          0.642,
+          0.778
+        ],
+        "positives_ge2": 69,
+        "auc_label_ge3": 0.706,
+        "auc_label_ge3_ci95": [
+          0.623,
+          0.78
+        ],
+        "positives_ge3": 46
+      },
+      "only_-log_lemma_freq": {
+        "spearman": 0.352,
+        "spearman_ci95": [
+          0.248,
+          0.454
+        ],
+        "auc_label_ge2": 0.739,
+        "auc_label_ge2_ci95": [
+          0.668,
+          0.808
+        ],
+        "positives_ge2": 69,
+        "auc_label_ge3": 0.722,
+        "auc_label_ge3_ci95": [
+          0.644,
+          0.797
+        ],
+        "positives_ge3": 46
+      },
+      "freq_len": {
+        "spearman": 0.268,
+        "spearman_ci95": [
+          0.155,
+          0.372
+        ],
+        "auc_label_ge2": 0.681,
+        "auc_label_ge2_ci95": [
+          0.605,
+          0.756
+        ],
+        "positives_ge2": 69,
+        "auc_label_ge3": 0.686,
+        "auc_label_ge3_ci95": [
+          0.598,
+          0.765
+        ],
+        "positives_ge3": 46
+      },
+      "freq_len_charngram": {
+        "spearman": 0.3,
+        "spearman_ci95": [
+          0.195,
+          0.404
+        ],
+        "auc_label_ge2": 0.707,
+        "auc_label_ge2_ci95": [
+          0.637,
+          0.777
+        ],
+        "positives_ge2": 69,
+        "auc_label_ge3": 0.684,
+        "auc_label_ge3_ci95": [
+          0.596,
+          0.769
+        ],
+        "positives_ge3": 46
+      }
+    }
+  },
+  "round3_new_labeled": {
+    "n_words": 196,
+    "label_counts": {
+      "1": 157,
+      "2": 15,
+      "3": 12,
+      "4": 5,
+      "5": 7
+    },
+    "models": {
+      "only_-log_freq": {
+        "spearman": 0.168,
+        "spearman_ci95": [
+          0.026,
+          0.305
+        ],
+        "auc_label_ge2": 0.615,
+        "auc_label_ge2_ci95": [
+          0.513,
+          0.711
+        ],
+        "positives_ge2": 39,
+        "auc_label_ge3": 0.593,
+        "auc_label_ge3_ci95": [
+          0.459,
+          0.723
+        ],
+        "positives_ge3": 24
+      },
+      "only_-log_lemma_freq": {
+        "spearman": 0.202,
+        "spearman_ci95": [
+          0.07,
+          0.324
+        ],
+        "auc_label_ge2": 0.638,
+        "auc_label_ge2_ci95": [
+          0.548,
+          0.725
+        ],
+        "positives_ge2": 39,
+        "auc_label_ge3": 0.623,
+        "auc_label_ge3_ci95": [
+          0.508,
+          0.731
+        ],
+        "positives_ge3": 24
+      },
+      "freq_len": {
+        "spearman": 0.127,
+        "spearman_ci95": [
+          -0.018,
+          0.263
+        ],
+        "auc_label_ge2": 0.585,
+        "auc_label_ge2_ci95": [
+          0.483,
+          0.682
+        ],
+        "positives_ge2": 39,
+        "auc_label_ge3": 0.567,
+        "auc_label_ge3_ci95": [
+          0.435,
+          0.698
+        ],
+        "positives_ge3": 24
+      },
+      "freq_len_charngram": {
+        "spearman": 0.115,
+        "spearman_ci95": [
+          -0.029,
+          0.258
+        ],
+        "auc_label_ge2": 0.576,
+        "auc_label_ge2_ci95": [
+          0.469,
+          0.676
+        ],
+        "positives_ge2": 39,
+        "auc_label_ge3": 0.552,
+        "auc_label_ge3_ci95": [
+          0.418,
+          0.677
+        ],
+        "positives_ge3": 24
+      }
+    }
+  },
+  "combined": {
+    "n_words": 694,
+    "label_counts": {
+      "1": 568,
+      "2": 46,
+      "3": 39,
+      "4": 15,
+      "5": 26
+    },
+    "models": {
+      "only_-log_freq": {
+        "spearman": 0.314,
+        "spearman_ci95": [
+          0.25,
+          0.374
+        ],
+        "auc_label_ge2": 0.732,
+        "auc_label_ge2_ci95": [
+          0.687,
+          0.776
+        ],
+        "positives_ge2": 126,
+        "auc_label_ge3": 0.726,
+        "auc_label_ge3_ci95": [
+          0.671,
+          0.774
+        ],
+        "positives_ge3": 80
+      },
+      "only_-log_lemma_freq": {
+        "spearman": 0.33,
+        "spearman_ci95": [
+          0.266,
+          0.39
+        ],
+        "auc_label_ge2": 0.743,
+        "auc_label_ge2_ci95": [
+          0.698,
+          0.786
+        ],
+        "positives_ge2": 126,
+        "auc_label_ge3": 0.738,
+        "auc_label_ge3_ci95": [
+          0.685,
+          0.785
+        ],
+        "positives_ge3": 80
+      },
+      "freq_len": {
+        "spearman": 0.282,
+        "spearman_ci95": [
+          0.217,
+          0.345
+        ],
+        "auc_label_ge2": 0.708,
+        "auc_label_ge2_ci95": [
+          0.66,
+          0.754
+        ],
+        "positives_ge2": 126,
+        "auc_label_ge3": 0.704,
+        "auc_label_ge3_ci95": [
+          0.647,
+          0.755
+        ],
+        "positives_ge3": 80
+      },
+      "freq_len_charngram": {
+        "spearman": 0.273,
+        "spearman_ci95": [
+          0.204,
+          0.336
+        ],
+        "auc_label_ge2": 0.702,
+        "auc_label_ge2_ci95": [
+          0.653,
+          0.748
+        ],
+        "positives_ge2": 126,
+        "auc_label_ge3": 0.679,
+        "auc_label_ge3_ci95": [
+          0.614,
+          0.736
+        ],
+        "positives_ge3": 80
+      }
+    }
+  }
+}

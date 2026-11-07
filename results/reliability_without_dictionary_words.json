@@ -1,0 +1,32 @@
+{
+  "without_dictionary_words": {
+    "n_words": 34,
+    "exact_agreement": 0.647,
+    "within_one": 0.853,
+    "mean_old": 2.06,
+    "mean_new": 1.65,
+    "qwk": 0.62,
+    "qwk_ci95": [
+      0.228,
+      0.869
+    ],
+    "spearman": 0.509,
+    "spearman_ci95": [
+      0.146,
+      0.768
+    ],
+    "marked_as_remembered": 0,
+    "binary_ge2": {
+      "agreement": 0.706,
+      "kappa": 0.351,
+      "hard_old": 14,
+      "hard_new": 8
+    },
+    "binary_ge3": {
+      "agreement": 0.882,
+      "kappa": 0.642,
+      "hard_old": 8,
+      "hard_new": 6
+    }
+  }
+}

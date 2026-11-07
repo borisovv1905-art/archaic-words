@@ -91,3 +91,26 @@ def test_evaluate_many_single_sheet_has_no_combined(tmp_path):
     raw, words, freq = make_raw(tmp_path / "raw")
     p, _ = _labeled(tmp_path, words[:30], freq)
     assert set(transfer.evaluate_many(raw, [p], n_boot=50)) == {"labeled"}
+
+
+def test_load_lemma_freq_sums_forms_of_same_lemma(tmp_path):
+    from archword.data import FREQ_FILE, load_lemma_freq
+    p = tmp_path / FREQ_FILE
+    p.parent.mkdir(parents=True)
+    rows = ["СЛОВО\tРАНГ\tipm\tДОК\tЛЕММЫ\tPOS",
+            "ямщик\t1\t1.0\t1\t10 ямщик (NOUN)\tNOUN",
+            "ямщика\t2\t0.5\t1\t10 ямщик (NOUN)\tNOUN",
+            "ямщиком\t3\t0.1\t1\t10 ямщик (NOUN)\tNOUN",
+            "дом\t4\t50\t1\t20 дом (NOUN)\tNOUN"]
+    p.write_text("\n".join(rows), encoding="utf-8")
+    lf = load_lemma_freq(tmp_path)
+    assert abs(lf["ямщиком"] - 1.6) < 1e-6      # у редкой формы частота всей леммы
+    assert abs(lf["дом"] - 50) < 1e-6
+
+
+def test_evaluate_many_adds_lemma_model(tmp_path):
+    raw, words, freq = make_raw(tmp_path / "raw")
+    path, _ = _labeled(tmp_path, words[:30], freq)
+    from archword import data
+    rep = transfer.evaluate_many(raw, [path], n_boot=20, with_lemma=False)
+    assert "only_-log_lemma_freq" not in rep["labeled"]["models"]

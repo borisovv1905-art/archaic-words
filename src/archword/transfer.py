@@ -22,7 +22,7 @@ from scipy.stats import spearmanr
 from sklearn.metrics import roc_auc_score
 
 from .baseline import build_frame, make_model
-from .data import load_complexity, load_freq, log_freq
+from .data import load_complexity, load_freq, load_lemma_freq, log_freq
 
 THRESHOLDS = (2, 3)
 # строки с такой пометкой в колонке note в оценку не входят: имена и опечатки/артефакты текста
@@ -93,22 +93,24 @@ def evaluate(raw: str | Path, labeled: str | Path, n_boot: int = 2000, seed: int
     return _evaluate_sheet(load_freq(raw), load_complexity(raw, "train"), load_labeled(labeled), n_boot, seed)
 
 
-def evaluate_many(raw: str | Path, labeled: list[str | Path], n_boot: int = 2000, seed: int = 0) -> dict:
+def evaluate_many(raw: str | Path, labeled: list[str | Path], n_boot: int = 2000, seed: int = 0,
+                  with_lemma: bool = False) -> dict:
     """Оценка по каждой таблице отдельно и по их объединению.
 
     Таблицы собраны по-разному (раунд 1: случайная выборка по группам частоты, раунд 2: только редкие слова),
     поэтому главный результат даёт каждая таблица отдельно, а объединение нужно для сравнения с общим числом слов.
     """
     freq, train = load_freq(raw), load_complexity(raw, "train")
+    lemma = load_lemma_freq(raw) if with_lemma else None
     sheets = {Path(p).stem: load_labeled(p) for p in labeled}
-    report = {name: _evaluate_sheet(freq, train, df, n_boot, seed) for name, df in sheets.items()}
+    report = {name: _evaluate_sheet(freq, train, df, n_boot, seed, lemma) for name, df in sheets.items()}
     if len(sheets) > 1:
         both = pd.concat(sheets.values(), ignore_index=True)
-        report["combined"] = _evaluate_sheet(freq, train, both, n_boot, seed)
+        report["combined"] = _evaluate_sheet(freq, train, both, n_boot, seed, lemma)
     return report
 
 
-def _evaluate_sheet(freq, train, sheet: pd.DataFrame, n_boot: int, seed: int) -> dict:
+def _evaluate_sheet(freq, train, sheet: pd.DataFrame, n_boot: int, seed: int, lemma=None) -> dict:
     y = sheet["label"].to_numpy()
     report = {
         "n_words": int(len(sheet)),
@@ -116,6 +118,8 @@ def _evaluate_sheet(freq, train, sheet: pd.DataFrame, n_boot: int, seed: int) ->
         "models": {},
     }
     preds = {"only_-log_freq": -log_freq(sheet["word"], freq)}
+    if lemma is not None:
+        preds["only_-log_lemma_freq"] = -log_freq(sheet["word"], lemma)
     frame = build_frame(sheet.rename(columns={"word": "token"}), freq)
     for kind in ("freq_len", "freq_len_charngram"):
         model = make_model(kind).fit(build_frame(train, freq), train["complexity"].to_numpy())
@@ -132,10 +136,11 @@ def main(argv=None) -> None:
                     help="размеченная таблица (CSV или XLSX); можно повторять, тогда будет и результат по объединению")
     ap.add_argument("--out", default="results/transfer_round1.json")
     ap.add_argument("--boot", type=int, default=2000)
+    ap.add_argument("--lemma", action="store_true", help="добавить модель по частоте леммы (медленнее: ~30 с на разбор словаря)")
     args = ap.parse_args(argv)
     labeled = args.labeled or ["data/annotation/round1_labeled.csv"]
-    report = evaluate(args.raw, labeled[0], n_boot=args.boot) if len(labeled) == 1 \
-        else evaluate_many(args.raw, labeled, n_boot=args.boot)
+    report = evaluate(args.raw, labeled[0], n_boot=args.boot) if len(labeled) == 1 and not args.lemma \
+        else evaluate_many(args.raw, labeled, n_boot=args.boot, with_lemma=args.lemma)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")

@@ -1,0 +1,30 @@
+{
+  "n_words": 40,
+  "exact_agreement": 0.6,
+  "within_one": 0.8,
+  "mean_old": 2.27,
+  "mean_new": 1.75,
+  "qwk": 0.551,
+  "qwk_ci95": [
+    0.246,
+    0.801
+  ],
+  "spearman": 0.536,
+  "spearman_ci95": [
+    0.235,
+    0.767
+  ],
+  "marked_as_remembered": 0,
+  "binary_ge2": {
+    "agreement": 0.7,
+    "kappa": 0.4,
+    "hard_old": 20,
+    "hard_new": 12
+  },
+  "binary_ge3": {
+    "agreement": 0.85,
+    "kappa": 0.628,
+    "hard_old": 13,
+    "hard_new": 9
+  }
+}

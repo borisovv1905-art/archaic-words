@@ -50,6 +50,41 @@ def load_freq(raw: str | Path) -> dict[str, float]:
     return df.dropna().groupby("w")["ipm"].max().to_dict()
 
 
+def load_lemma_freq(raw: str | Path) -> dict[str, float]:
+    """Словарь «словоформа -> суммарная частота всех форм её леммы» (на миллион слов).
+
+    Лемма берётся из колонки «ЛЕММЫ (по OpenCorpora)»: «116949 и (CONJ), 389621 и (NOUN)».
+    Если у формы несколько лемм, берётся та, у которой суммарная частота выше (как и в load_freq для омонимов).
+    Формы, которых нет в словаре, при поиске получают FLOOR_IPM.
+    """
+    path = _need(Path(raw) / FREQ_FILE, "частотный словарь")
+    df = pd.read_csv(path, sep="\t", usecols=[0, 2, 4], header=0, names=["w", "ipm", "lem"])
+    df["w"] = df["w"].astype(str).str.replace("\ufeff", "", regex=False).map(normalize)
+    df["ipm"] = pd.to_numeric(df["ipm"], errors="coerce")
+    df = df.dropna(subset=["ipm"])
+
+    def lemmas(cell) -> list[str]:
+        out = []
+        for part in str(cell).split("),"):
+            toks = part.strip().split(" ")
+            if len(toks) >= 2 and toks[0].isdigit():
+                out.append(normalize(toks[1]))
+        return out
+
+    df["lemmas"] = df["lem"].map(lemmas)
+    forms = df.groupby("w")["ipm"].max()
+    total: dict[str, float] = {}
+    first = df.drop_duplicates("w").set_index("w")["lemmas"]
+    for w, lems in first.items():
+        for lem in set(lems):
+            total[lem] = total.get(lem, 0.0) + float(forms[w])
+    result = {}
+    for w, lems in first.items():
+        best = max((total[l] for l in lems), default=float(forms[w]))
+        result[w] = max(best, float(forms[w]))
+    return result
+
+
 def log_freq(words, freq: dict[str, float]) -> np.ndarray:
     """log10 частоты; для отсутствующих слов берётся FLOOR_IPM."""
     return np.array([np.log10(freq.get(normalize(w), FLOOR_IPM)) for w in words])
