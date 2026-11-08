@@ -1,0 +1,82 @@
+{
+  "setting": "own",
+  "n": 694,
+  "n_folds": 5,
+  "seeds": [
+    "0"
+  ],
+  "pooled": {
+    "spearman": 0.254,
+    "spearman_ci95": [
+      0.184,
+      0.315
+    ],
+    "auc_label_ge2": 0.687,
+    "auc_label_ge2_ci95": [
+      0.635,
+      0.734
+    ],
+    "positives_ge2": 126,
+    "auc_label_ge3": 0.706,
+    "auc_label_ge3_ci95": [
+      0.645,
+      0.76
+    ],
+    "positives_ge3": 80
+  },
+  "per_seed_spearman": [
+    0.254
+  ],
+  "per_fold": {
+    "0": {
+      "n": 139,
+      "spearman": 0.238
+    },
+    "1": {
+      "n": 139,
+      "spearman": 0.192
+    },
+    "2": {
+      "n": 139,
+      "spearman": 0.273
+    },
+    "3": {
+      "n": 139,
+      "spearman": 0.252
+    },
+    "4": {
+      "n": 138,
+      "spearman": 0.34
+    }
+  },
+  "per_round": {
+    "round1": {
+      "n": 200,
+      "share_hard": 0.09,
+      "spearman": 0.295,
+      "auc_ge2": 0.797
+    },
+    "round2": {
+      "n": 298,
+      "share_hard": 0.232,
+      "spearman": 0.188,
+      "auc_ge2": 0.624
+    },
+    "round3": {
+      "n": 196,
+      "share_hard": 0.199,
+      "spearman": 0.244,
+      "auc_ge2": 0.671
+    }
+  },
+  "config": {
+    "model": "cointegrated/rubert-tiny2",
+    "epochs": 4,
+    "own_epochs": 8,
+    "lr": 5e-05,
+    "batch_size": 16,
+    "max_len": 128,
+    "seed": 0
+  },
+  "n_bible_train": 0
+}

@@ -58,3 +58,25 @@ def test_by_round_reports_each_round():
     out = cmp.by_round(df, {"model": df["label"].to_numpy(float)})
     assert set(out) == {"a", "b"} and out["a"]["n"] == 3
     assert out["a"]["model"]["auc_ge2"] == 1.0
+
+
+def test_run_accepts_other_model_and_checks_alignment(tmp_path):
+    rng = np.random.default_rng(0)
+    raw = tmp_path / "raw" / "auxiliary"
+    raw.mkdir(parents=True)
+    words = [f"слово{i}" for i in range(80)]
+    (raw / "rus_freq_dictionary_1992-2019.csv").write_text(
+        "Lemma\tPoS\tFreq(ipm)\tR\tLEMMAS\n" + "".join(f"{w}\tx\t{i + 1}.0\t1\t{i + 1} {w} (NOUN)\n" for i, w in enumerate(words)), encoding="utf-8")
+    y = rng.integers(1, 5, 80)
+    df = pd.DataFrame({"word": words, "context": ["фраза"] * 80, "label": y, "m": y + rng.normal(0, 1, 80), "o": rng.normal(0, 1, 80)})
+    a, b = tmp_path / "a.csv", tmp_path / "b.csv"
+    df[["word", "context", "label", "m"]].to_csv(a, index=False)
+    df[["word", "context", "label", "o"]].to_csv(b, index=False)
+    report, _ = cmp.run(tmp_path / "raw", a, "m", n_boot=30, other=b, other_col="o")
+    assert "other:o" in report["vs"] and report["vs"]["other:o"]["spearman"]["diff"] > 0
+    df.iloc[::-1][["word", "context", "label", "o"]].to_csv(b, index=False)
+    try:
+        cmp.run(tmp_path / "raw", a, "m", n_boot=30, other=b, other_col="o")
+    except ValueError:
+        return
+    raise AssertionError("ожидалась ошибка про разные строки")
