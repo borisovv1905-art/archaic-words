@@ -1,0 +1,116 @@
+{
+  "config": {
+    "model": "cointegrated/rubert-tiny2",
+    "epochs": 4,
+    "own_epochs": 8,
+    "lr": 5e-05,
+    "batch_size": 16,
+    "max_len": 128,
+    "seed": 0
+  },
+  "n_test": 196,
+  "n_own_train": 498,
+  "n_bible_train": 2694,
+  "settings": {
+    "bible": {
+      "spearman": 0.206,
+      "spearman_ci95": [
+        0.075,
+        0.348
+      ],
+      "auc_label_ge2": 0.661,
+      "auc_label_ge2_ci95": [
+        0.568,
+        0.76
+      ],
+      "positives_ge2": 39,
+      "auc_label_ge3": 0.578,
+      "auc_label_ge3_ci95": [
+        0.457,
+        0.699
+      ],
+      "positives_ge3": 24,
+      "spearman_per_seed": [
+        0.204,
+        0.168,
+        0.224
+      ],
+      "public_test_spearman": 0.599
+    },
+    "own": {
+      "spearman": 0.268,
+      "spearman_ci95": [
+        0.133,
+        0.392
+      ],
+      "auc_label_ge2": 0.693,
+      "auc_label_ge2_ci95": [
+        0.597,
+        0.781
+      ],
+      "positives_ge2": 39,
+      "auc_label_ge3": 0.713,
+      "auc_label_ge3_ci95": [
+        0.597,
+        0.82
+      ],
+      "positives_ge3": 24,
+      "spearman_per_seed": [
+        0.264,
+        0.266,
+        0.227
+      ],
+      "public_test_spearman": 0.228
+    },
+    "bible_then_own": {
+      "spearman": 0.363,
+      "spearman_ci95": [
+        0.234,
+        0.484
+      ],
+      "auc_label_ge2": 0.761,
+      "auc_label_ge2_ci95": [
+        0.674,
+        0.843
+      ],
+      "positives_ge2": 39,
+      "auc_label_ge3": 0.789,
+      "auc_label_ge3_ci95": [
+        0.687,
+        0.884
+      ],
+      "positives_ge3": 24,
+      "spearman_per_seed": [
+        0.366,
+        0.349,
+        0.35
+      ],
+      "public_test_spearman": 0.468
+    },
+    "mixed": {
+      "spearman": 0.305,
+      "spearman_ci95": [
+        0.174,
+        0.428
+      ],
+      "auc_label_ge2": 0.725,
+      "auc_label_ge2_ci95": [
+        0.636,
+        0.808
+      ],
+      "positives_ge2": 39,
+      "auc_label_ge3": 0.708,
+      "auc_label_ge3_ci95": [
+        0.595,
+        0.81
+      ],
+      "positives_ge3": 24,
+      "spearman_per_seed": [
+        0.301,
+        0.314,
+        0.264
+      ],
+      "public_test_spearman": 0.544
+    }
+  }
+}

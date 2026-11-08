@@ -1,0 +1,41 @@
+{
+  "config": {
+    "model": "cointegrated/rubert-tiny2",
+    "epochs": 4,
+    "own_epochs": 8,
+    "lr": 5e-05,
+    "batch_size": 16,
+    "max_len": 128,
+    "seed": 0
+  },
+  "n_test": 196,
+  "n_own_train": 498,
+  "n_bible_train": 2694,
+  "settings": {
+    "bible_then_own": {
+      "spearman": 0.363,
+      "spearman_ci95": [
+        0.234,
+        0.484
+      ],
+      "auc_label_ge2": 0.761,
+      "auc_label_ge2_ci95": [
+        0.674,
+        0.843
+      ],
+      "positives_ge2": 39,
+      "auc_label_ge3": 0.789,
+      "auc_label_ge3_ci95": [
+        0.687,
+        0.884
+      ],
+      "positives_ge3": 24,
+      "spearman_per_seed": [
+        0.366,
+        0.349,
+        0.35
+      ],
+      "public_test_spearman": 0.468
+    }
+  }
+}

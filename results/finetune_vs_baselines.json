@@ -1,0 +1,76 @@
+{
+  "n": 196,
+  "pred_col": "pred_bible_then_own",
+  "vs": {
+    "-log_freq": {
+      "spearman": {
+        "model": 0.363,
+        "baseline": 0.168,
+        "diff": 0.195,
+        "diff_ci95": [
+          0.01,
+          0.377
+        ],
+        "share_not_better": 0.0192,
+        "n_boot_ok": 5000
+      },
+      "auc_ge2": {
+        "model": 0.761,
+        "baseline": 0.615,
+        "diff": 0.146,
+        "diff_ci95": [
+          0.009,
+          0.278
+        ],
+        "share_not_better": 0.017,
+        "n_boot_ok": 5000
+      },
+      "auc_ge3": {
+        "model": 0.789,
+        "baseline": 0.593,
+        "diff": 0.196,
+        "diff_ci95": [
+          0.013,
+          0.373
+        ],
+        "share_not_better": 0.0182,
+        "n_boot_ok": 5000
+      }
+    },
+    "-log_lemma_freq": {
+      "spearman": {
+        "model": 0.363,
+        "baseline": 0.202,
+        "diff": 0.162,
+        "diff_ci95": [
+          -0.022,
+          0.344
+        ],
+        "share_not_better": 0.0422,
+        "n_boot_ok": 5000
+      },
+      "auc_ge2": {
+        "model": 0.761,
+        "baseline": 0.638,
+        "diff": 0.123,
+        "diff_ci95": [
+          -0.008,
+          0.255
+        ],
+        "share_not_better": 0.0326,
+        "n_boot_ok": 5000
+      },
+      "auc_ge3": {
+        "model": 0.789,
+        "baseline": 0.623,
+        "diff": 0.166,
+        "diff_ci95": [
+          -0.001,
+          0.325
+        ],
+        "share_not_better": 0.0258,
+        "n_boot_ok": 5000
+      }
+    }
+  }
+}
