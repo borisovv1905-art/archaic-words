@@ -11,6 +11,7 @@
 
 Таблица ошибок: для каждого слова ранг в предсказании модели и ранг в оценке читателя
 (по убыванию трудности), разность рангов показывает, где модель больше всего расходится с читателем.
+Если в таблице предсказаний есть колонка round (как в `archword.crossval`), метрики считаются ещё и по раундам.
 """
 from __future__ import annotations
 
@@ -68,6 +69,38 @@ def paired_bootstrap(y, p_model, p_base, n_boot: int = 5000, seed: int = 0) -> d
     return out
 
 
+def precision_at_r(y, p, t: int) -> float:
+    """Точность среди R слов с самыми высокими баллами, где R - число слов с оценкой не ниже t (R-precision).
+
+    При равных баллах (у частотного бейзлайна их много) берётся математическое ожидание при случайном порядке.
+    """
+    y, p = np.asarray(y, float), np.asarray(p, float)
+    pos = y >= t
+    r = int(pos.sum())
+    if r == 0:
+        raise ValueError("нет трудных слов")
+    cut = np.sort(p)[::-1][r - 1]
+    above, tied = p > cut, p == cut
+    hits = pos[above].sum() + pos[tied].mean() * (r - above.sum())
+    return round(float(hits / r), 3)
+
+
+def by_round(df: pd.DataFrame, cols: dict[str, np.ndarray]) -> dict:
+    """Spearman и AUC для порога 2 по раундам разметки (если в таблице есть колонка round)."""
+    out = {}
+    for r, g in df.groupby("round"):
+        i = g.index.to_numpy()
+        row = {"n": int(len(g)), "share_hard": round(float((g["label"] >= 2).mean()), 3)}
+        for name, v in cols.items():
+            try:
+                row[name] = {"spearman": round(_metric("spearman", g["label"].to_numpy(float), v[i]), 3),
+                             "auc_ge2": round(_metric("auc_ge2", g["label"].to_numpy(float), v[i]), 3)}
+            except ValueError:
+                row[name] = None
+        out[str(r)] = row
+    return out
+
+
 def error_table(df: pd.DataFrame, pred_col: str) -> pd.DataFrame:
     """Ранги по убыванию трудности: 1 = самое трудное. rank_gap > 0: модель считает слово менее трудным, чем читатель."""
     t = df[["word", "label", pred_col]].copy()
@@ -90,6 +123,10 @@ def run(raw, predictions, pred_col: str, n_boot: int = 5000, seed: int = 0) -> t
         "-log_lemma_freq": -log_freq(df["word"], lem),
     }
     report = {"n": int(len(df)), "pred_col": pred_col, "vs": {k: paired_bootstrap(y, p, v, n_boot, seed) for k, v in bases.items()}}
+    allp = {"model": p, **bases}
+    report["precision_at_r"] = {name: {f"ge{t}": precision_at_r(y, v, t) for t in THRESHOLDS if (y >= t).any()} for name, v in allp.items()}
+    if "round" in df:
+        report["by_round"] = by_round(df, allp)
     return report, error_table(df, pred_col)
 
 
@@ -110,6 +147,7 @@ def main(argv=None) -> None:
         print(base)
         for m, r in res.items():
             print(f"  {m:9s} модель {r['model']:.3f} | база {r['baseline']:.3f} | разность {r['diff']:+.3f} {r['diff_ci95']} | доля «не лучше» {r['share_not_better']}")
+    print("точность среди R слов с наибольшим баллом (R - число трудных слов):", report["precision_at_r"])
 
 
 if __name__ == "__main__":

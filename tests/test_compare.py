@@ -39,3 +39,22 @@ def test_error_table_ranks_use_average_for_ties_and_sign_of_gap():
     # модель считает «а» лёгким (низкий балл), читатель - самым трудным: модель ставит его ниже, ранг больше
     assert t.loc["а", "rank_gap"] > 0 and t.loc["б", "rank_gap"] < 0
     assert t.index[0] == "а"
+
+
+def test_precision_at_r_counts_hits_in_top_r():
+    y = np.array([1, 1, 3, 3, 1, 1.0])
+    assert cmp.precision_at_r(y, np.array([0.1, 0.2, 0.9, 0.8, 0.3, 0.0]), 3) == 1.0
+    assert cmp.precision_at_r(y, np.array([0.9, 0.8, 0.1, 0.2, 0.3, 0.0]), 3) == 0.0
+
+
+def test_precision_at_r_splits_ties_evenly():
+    y = np.array([3, 1, 1, 1.0])
+    # все баллы равны: из R=1 слов случайный выбор попадает в трудное слово с вероятностью 1/4
+    assert cmp.precision_at_r(y, np.zeros(4), 3) == 0.25
+
+
+def test_by_round_reports_each_round():
+    df = pd.DataFrame({"label": [1, 3, 1, 4, 1, 1], "round": ["a", "a", "a", "b", "b", "b"]})
+    out = cmp.by_round(df, {"model": df["label"].to_numpy(float)})
+    assert set(out) == {"a", "b"} and out["a"]["n"] == 3
+    assert out["a"]["model"]["auc_ge2"] == 1.0
