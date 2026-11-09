@@ -1,0 +1,191 @@
+{
+  "n": 694,
+  "pred_col": "pred_ensemble",
+  "vs": {
+    "-log_freq": {
+      "spearman": {
+        "model": 0.472,
+        "baseline": 0.314,
+        "diff": 0.158,
+        "diff_ci95": [
+          0.102,
+          0.218
+        ],
+        "share_not_better": 0.0,
+        "n_boot_ok": 5000
+      },
+      "auc_ge2": {
+        "model": 0.85,
+        "baseline": 0.732,
+        "diff": 0.118,
+        "diff_ci95": [
+          0.076,
+          0.161
+        ],
+        "share_not_better": 0.0,
+        "n_boot_ok": 5000
+      },
+      "auc_ge3": {
+        "model": 0.86,
+        "baseline": 0.726,
+        "diff": 0.134,
+        "diff_ci95": [
+          0.082,
+          0.186
+        ],
+        "share_not_better": 0.0,
+        "n_boot_ok": 5000
+      }
+    },
+    "-log_lemma_freq": {
+      "spearman": {
+        "model": 0.472,
+        "baseline": 0.33,
+        "diff": 0.142,
+        "diff_ci95": [
+          0.091,
+          0.194
+        ],
+        "share_not_better": 0.0,
+        "n_boot_ok": 5000
+      },
+      "auc_ge2": {
+        "model": 0.85,
+        "baseline": 0.743,
+        "diff": 0.107,
+        "diff_ci95": [
+          0.066,
+          0.148
+        ],
+        "share_not_better": 0.0,
+        "n_boot_ok": 5000
+      },
+      "auc_ge3": {
+        "model": 0.86,
+        "baseline": 0.738,
+        "diff": 0.122,
+        "diff_ci95": [
+          0.078,
+          0.166
+        ],
+        "share_not_better": 0.0,
+        "n_boot_ok": 5000
+      }
+    },
+    "-log_lemma_freq_pymorphy": {
+      "spearman": {
+        "model": 0.472,
+        "baseline": 0.395,
+        "diff": 0.077,
+        "diff_ci95": [
+          0.034,
+          0.122
+        ],
+        "share_not_better": 0.0,
+        "n_boot_ok": 5000
+      },
+      "auc_ge2": {
+        "model": 0.85,
+        "baseline": 0.793,
+        "diff": 0.057,
+        "diff_ci95": [
+          0.023,
+          0.092
+        ],
+        "share_not_better": 0.0008,
+        "n_boot_ok": 5000
+      },
+      "auc_ge3": {
+        "model": 0.86,
+        "baseline": 0.779,
+        "diff": 0.081,
+        "diff_ci95": [
+          0.043,
+          0.119
+        ],
+        "share_not_better": 0.0,
+        "n_boot_ok": 5000
+      }
+    }
+  },
+  "precision_at_r": {
+    "model": {
+      "ge2": 0.532,
+      "ge3": 0.4
+    },
+    "-log_freq": {
+      "ge2": 0.349,
+      "ge3": 0.212
+    },
+    "-log_lemma_freq": {
+      "ge2": 0.405,
+      "ge3": 0.225
+    },
+    "-log_lemma_freq_pymorphy": {
+      "ge2": 0.46,
+      "ge3": 0.275
+    }
+  },
+  "by_round": {
+    "round1": {
+      "n": 200,
+      "share_hard": 0.09,
+      "model": {
+        "spearman": 0.404,
+        "auc_ge2": 0.906
+      },
+      "-log_freq": {
+        "spearman": 0.338,
+        "auc_ge2": 0.839
+      },
+      "-log_lemma_freq": {
+        "spearman": 0.328,
+        "auc_ge2": 0.828
+      },
+      "-log_lemma_freq_pymorphy": {
+        "spearman": 0.379,
+        "auc_ge2": 0.881
+      }
+    },
+    "round2": {
+      "n": 298,
+      "share_hard": 0.232,
+      "model": {
+        "spearman": 0.491,
+        "auc_ge2": 0.831
+      },
+      "-log_freq": {
+        "spearman": 0.308,
+        "auc_ge2": 0.71
+      },
+      "-log_lemma_freq": {
+        "spearman": 0.352,
+        "auc_ge2": 0.739
+      },
+      "-log_lemma_freq_pymorphy": {
+        "spearman": 0.405,
+        "auc_ge2": 0.775
+      }
+    },
+    "round3": {
+      "n": 196,
+      "share_hard": 0.199,
+      "model": {
+        "spearman": 0.434,
+        "auc_ge2": 0.809
+      },
+      "-log_freq": {
+        "spearman": 0.168,
+        "auc_ge2": 0.615
+      },
+      "-log_lemma_freq": {
+        "spearman": 0.202,
+        "auc_ge2": 0.638
+      },
+      "-log_lemma_freq_pymorphy": {
+        "spearman": 0.294,
+        "auc_ge2": 0.708
+      }
+    }
+  }
+}

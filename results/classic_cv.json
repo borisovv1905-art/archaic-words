@@ -4,44 +4,45 @@
   "features": [
     "log_form",
     "log_lemma",
+    "log_lemma_pymorphy",
     "len"
   ],
   "models": {
     "pred_ridge_numeric": {
-      "spearman": 0.387,
+      "spearman": 0.42,
       "spearman_ci95": [
-        0.323,
-        0.446
+        0.357,
+        0.476
       ],
-      "auc_label_ge2": 0.787,
+      "auc_label_ge2": 0.812,
       "auc_label_ge2_ci95": [
-        0.745,
-        0.827
+        0.772,
+        0.85
       ],
       "positives_ge2": 126,
-      "auc_label_ge3": 0.779,
+      "auc_label_ge3": 0.804,
       "auc_label_ge3_ci95": [
-        0.73,
-        0.823
+        0.758,
+        0.844
       ],
       "positives_ge3": 80
     },
     "pred_ridge_ngram": {
-      "spearman": 0.426,
+      "spearman": 0.444,
       "spearman_ci95": [
-        0.364,
-        0.481
+        0.385,
+        0.499
       ],
-      "auc_label_ge2": 0.815,
+      "auc_label_ge2": 0.829,
       "auc_label_ge2_ci95": [
-        0.775,
-        0.852
+        0.79,
+        0.864
       ],
       "positives_ge2": 126,
-      "auc_label_ge3": 0.817,
+      "auc_label_ge3": 0.827,
       "auc_label_ge3_ci95": [
-        0.773,
-        0.857
+        0.782,
+        0.865
       ],
       "positives_ge3": 80
     }
