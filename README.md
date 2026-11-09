@@ -3,9 +3,11 @@
 [![CI](https://github.com/borisovv1905-art/archaic-words/actions/workflows/ci.yml/badge.svg)](https://github.com/borisovv1905-art/archaic-words/actions/workflows/ci.yml)
 [![Pages](https://github.com/borisovv1905-art/archaic-words/actions/workflows/pages.yml/badge.svg)](https://github.com/borisovv1905-art/archaic-words/actions/workflows/pages.yml)
 
+**[Демонстрация](https://archaic-words-cpigy5pljya6d6aojqsut4.streamlit.app)** (вставьте текст, и слова, которые стоит пояснить, подсветятся) · **[Страница проекта](https://borisovv1905-art.github.io/archaic-words/)**
+
 Модель, которая по тексту русской классики оценивает для каждого слова, насколько вероятно, что современному читателю нужно пояснение: «шлафорка», «понтировать», «кибитка», «чаяние».
 
-*English summary: a Russian complex-word detector for 19th-century prose. Public lexical-complexity datasets (Russian Bible sentences, crowdsourced) are used for training and a small hand-annotated sample from Pushkin's "Belkin Tales" measures how well models transfer to the target domain. Status: data pipeline, annotation tooling and baselines are done; transformer fine-tuning and domain-shift evaluation are next.*
+*English summary: a Russian complex-word detector for 19th-century prose. Public lexical-complexity data (Russian Bible sentences, crowdsourced) and a hand-annotated sample of 694 words from Pushkin's "Belkin Tales" are used to compare frequency baselines, a fine-tuned rubert-tiny2 and a linear model with character n-grams and pymorphy3 lemma frequency (5-fold CV Spearman 0.44, AUC 0.83 for words rated >= 2). A numpy-only export of the linear model powers a Streamlit demo; CI (ruff, pytest) runs on GitHub Actions, and a project page is built for GitHub Pages. Limitations: one annotator, one source text.*
 
 Проект вырос из личного словаря прочитанного (веб-приложение на Streamlit), где слова пока добавляются вручную.
 
@@ -312,7 +314,7 @@ streamlit run demo/app.py
 ## CI/CD
 
 - **CI** (`.github/workflows/ci.yml`): на каждый push и pull request - `ruff check` и `pytest` на Python 3.10 и 3.12. Тесты проверяют и готовую модель из `models/` (оценки в диапазоне, редкое слово труднее частого); если папки нет, эта проверка пропускается.
-- **CD, приложение**: приложение развёрнуто на Streamlit Community Cloud прямо из этого репозитория (файл `demo/app.py`), поэтому каждый push в `main` обновляет демонстрацию сам.
+- **CD, приложение**: приложение ([archaic-words-cpigy5pljya6d6aojqsut4.streamlit.app](https://archaic-words-cpigy5pljya6d6aojqsut4.streamlit.app)) развёрнуто на Streamlit Community Cloud прямо из этого репозитория (файл `demo/app.py`), поэтому каждый push в `main` обновляет демонстрацию сам.
 - **CD, страница проекта** (`.github/workflows/pages.yml`): GitHub Actions собирает из README и результатов страницу (`site/build.py`) и публикует её на GitHub Pages. Адрес демонстрации задаётся переменной репозитория `DEMO_URL`.
 
 ## План
