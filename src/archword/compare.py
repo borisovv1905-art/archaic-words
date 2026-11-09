@@ -111,7 +111,7 @@ def error_table(df: pd.DataFrame, pred_col: str) -> pd.DataFrame:
     return t.sort_values("rank_gap", ascending=False).reset_index(drop=True)
 
 
-def run(raw, predictions, pred_col: str, n_boot: int = 5000, seed: int = 0, other=None, other_col: str | None = None) -> tuple[dict, pd.DataFrame]:
+def run(raw, predictions, pred_col: str, n_boot: int = 5000, seed: int = 0, other=None, other_col: str | None = None, lemma_morph: bool = False) -> tuple[dict, pd.DataFrame]:
     df = pd.read_csv(predictions, encoding="utf-8-sig")
     if pred_col not in df or "label" not in df or "word" not in df:
         raise ValueError(f"В {predictions} нужны колонки word, label, {pred_col}")
@@ -122,6 +122,9 @@ def run(raw, predictions, pred_col: str, n_boot: int = 5000, seed: int = 0, othe
         "-log_freq": -log_freq(df["word"], freq),
         "-log_lemma_freq": -log_freq(df["word"], lem),
     }
+    if lemma_morph:
+        from .lemma import load_lemma_freq_morph  # нужен pymorphy3
+        bases["-log_lemma_freq_pymorphy"] = -log_freq(df["word"], load_lemma_freq_morph(raw))
     if other is not None:
         # другая модель на тех же словах (например, обучение без Библии): строки должны совпадать один в один
         o = pd.read_csv(other, encoding="utf-8-sig")
@@ -144,10 +147,11 @@ def main(argv=None) -> None:
     ap.add_argument("--pred-col", required=True)
     ap.add_argument("--other", help="таблица предсказаний другой модели на тех же словах, для парного сравнения")
     ap.add_argument("--other-col")
+    ap.add_argument("--lemma-morph", action="store_true", help="добавить бейзлайн по частоте леммы от pymorphy3 (см. archword.lemma)")
     ap.add_argument("--boot", type=int, default=5000)
     ap.add_argument("--out", default="results/finetune_vs_baselines.json")
     a = ap.parse_args(argv)
-    report, table = run(a.raw, a.predictions, a.pred_col, a.boot, other=a.other, other_col=a.other_col)
+    report, table = run(a.raw, a.predictions, a.pred_col, a.boot, other=a.other, other_col=a.other_col, lemma_morph=a.lemma_morph)
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")

@@ -1,0 +1,49 @@
+{
+  "n": 694,
+  "n_folds": 5,
+  "features": [
+    "log_form",
+    "log_lemma",
+    "len"
+  ],
+  "models": {
+    "pred_ridge_numeric": {
+      "spearman": 0.387,
+      "spearman_ci95": [
+        0.323,
+        0.446
+      ],
+      "auc_label_ge2": 0.787,
+      "auc_label_ge2_ci95": [
+        0.745,
+        0.827
+      ],
+      "positives_ge2": 126,
+      "auc_label_ge3": 0.779,
+      "auc_label_ge3_ci95": [
+        0.73,
+        0.823
+      ],
+      "positives_ge3": 80
+    },
+    "pred_ridge_ngram": {
+      "spearman": 0.426,
+      "spearman_ci95": [
+        0.364,
+        0.481
+      ],
+      "auc_label_ge2": 0.815,
+      "auc_label_ge2_ci95": [
+        0.775,
+        0.852
+      ],
+      "positives_ge2": 126,
+      "auc_label_ge3": 0.817,
+      "auc_label_ge3_ci95": [
+        0.773,
+        0.857
+      ],
+      "positives_ge3": 80
+    }
+  }
+}
