@@ -80,7 +80,7 @@ def load_lemma_freq(raw: str | Path) -> dict[str, float]:
             total[lem] = total.get(lem, 0.0) + float(forms[w])
     result = {}
     for w, lems in first.items():
-        best = max((total[l] for l in lems), default=float(forms[w]))
+        best = max((total[lem] for lem in lems), default=float(forms[w]))
         result[w] = max(best, float(forms[w]))
     return result
 

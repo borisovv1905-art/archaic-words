@@ -1,5 +1,8 @@
-name: tests
-on: [push, pull_request]
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -11,5 +14,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install -e ".[dev]"
-      - run: pytest -q
+          cache: pip
+      - run: pip install -e ".[dev,morph]"
+      - name: Линтер
+        run: ruff check src tests demo site
+      - name: Тесты (включая проверку готовой модели из models/, если она есть)
+        run: pytest -q

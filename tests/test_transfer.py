@@ -111,6 +111,5 @@ def test_load_lemma_freq_sums_forms_of_same_lemma(tmp_path):
 def test_evaluate_many_adds_lemma_model(tmp_path):
     raw, words, freq = make_raw(tmp_path / "raw")
     path, _ = _labeled(tmp_path, words[:30], freq)
-    from archword import data
     rep = transfer.evaluate_many(raw, [path], n_boot=20, with_lemma=False)
     assert "only_-log_lemma_freq" not in rep["labeled"]["models"]

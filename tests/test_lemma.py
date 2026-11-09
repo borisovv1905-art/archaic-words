@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 
 from archword import lemma as lm
 from archword.data import FLOOR_IPM, log_freq

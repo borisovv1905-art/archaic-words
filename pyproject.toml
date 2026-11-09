@@ -12,8 +12,8 @@ license = { text = "MIT" }
 dependencies = ["numpy>=1.24", "pandas>=2.0", "scikit-learn>=1.3", "scipy>=1.10", "requests>=2.31"]
 
 [project.optional-dependencies]
-dev = ["pytest>=7"]
-morph = ["pymorphy3>=2.0"]
+dev = ["pytest>=7", "ruff>=0.5", "markdown", "jinja2"]
+morph = ["pymorphy3>=2.0", "pymorphy3-dicts-ru"]
 nlp = ["torch>=2.1", "transformers>=4.40"]
 
 [tool.setuptools.packages.find]
@@ -22,3 +22,10 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501", "E701", "E702", "E731"]

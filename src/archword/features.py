@@ -1,7 +1,6 @@
 """Признаки слова: частота, длина, «нет в словаре», символьные n-граммы."""
 from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 
 from .data import log_freq

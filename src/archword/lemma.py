@@ -18,7 +18,6 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Callable
 
-import numpy as np
 import pandas as pd
 
 from .data import FLOOR_IPM, FREQ_FILE, _need
